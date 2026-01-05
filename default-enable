@@ -1,0 +1,2 @@
+This file indicates that the TOTP module is enabled by default.
+Remove this file to disable the module.

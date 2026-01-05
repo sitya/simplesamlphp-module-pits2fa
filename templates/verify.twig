@@ -1,0 +1,42 @@
+{% extends "base.twig" %}
+
+{% block title %}{{ 'TOTP Verification'|trans }}{% endblock %}
+
+{% block content %}
+<div class="totp-verification">
+    <h2>{{ 'Two-Factor Authentication'|trans }}</h2>
+    
+    {% if error %}
+    <div class="alert alert-danger">
+        <p>{{ 'Invalid verification code. Please try again.'|trans }}</p>
+        <p>{{ 'Attempts remaining:'|trans }} {{ maxAttempts - attempts }}</p>
+    </div>
+    {% endif %}
+    
+    <p>{{ 'Please enter your 6-digit verification code from your authenticator app.'|trans }}</p>
+    
+    <form method="post" action="{{ moduleURL('totp/verify') }}">
+        <input type="hidden" name="StateId" value="{{ stateId }}" />
+        
+        <div class="form-group">
+            <label for="totp_code">{{ 'Verification Code'|trans }}</label>
+            <input 
+                type="text" 
+                id="totp_code" 
+                name="totp_code" 
+                class="form-control" 
+                autocomplete="one-time-code"
+                inputmode="numeric"
+                pattern="[0-9]{6}"
+                maxlength="6"
+                required
+                autofocus
+            />
+        </div>
+        
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">{{ 'Verify'|trans }}</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

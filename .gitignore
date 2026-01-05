@@ -1,0 +1,35 @@
+# Dependencies
+/vendor/
+
+# Build artifacts
+/coverage/
+/.phpunit.result.cache
+/.php-cs-fixer.cache
+
+# Integration tests and Docker development environment
+/tests/Integration/
+/docker-compose.test.yml
+/docker/
+/tests/docker/
+/docker-run.sh
+/run-tests.sh
+/Makefile
+/.dockerignore
+
+# Development documentation (keep core docs, exclude dev-specific)
+/START_HERE.md
+/QUICKSTART.md
+/DOCKER_SETUP.md
+/TEST_SUMMARY.md
+/PUBLISH.md
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
+
+# Temporary files
+*.log
+*.swp
+*~
+/composer.lock
