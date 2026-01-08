@@ -36,3 +36,39 @@ msgstr "A bejelentkezés előtt konfigurálnia kell a kétfaktoros hitelesítés
 
 msgid "Please visit the following URL to set up TOTP:"
 msgstr "Kérjük, látogassa meg az alábbi URL-t a TOTP beállításához:"
+
+msgid "TOTP not registered"
+msgstr "TOTP nincs regisztrálva"
+
+msgid "Database query error"
+msgstr "Adatbázis lekérdezési hiba"
+
+msgid "Database error"
+msgstr "Adatbázis hiba"
+
+msgid "Network error"
+msgstr "Hálózati hiba"
+
+msgid "Invalid response"
+msgstr "Érvénytelen válasz"
+
+msgid "TOTP verification failed"
+msgstr "TOTP ellenőrzés sikertelen"
+
+msgid "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
+msgstr "Önnek nincs regisztrált TOTP (kétfaktoros hitelesítés). Kérjük, regisztráljon TOTP-t a https://pits.example.com oldalon a bejelentkezés előtt."
+
+msgid "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
+msgstr "Az adatbázis lekérdezés váratlan eredményt adott. Ha a probléma továbbra is fennáll, kérjük, forduljon a rendszergazdához."
+
+msgid "Failed to connect to the authentication database or execute a database query. Please try again later. If the problem persists, contact your system administrator."
+msgstr "Nem sikerült csatlakozni a hitelesítési adatbázishoz vagy végrehajtani az adatbázis lekérdezést. Kérjük, próbálja meg később. Ha a probléma továbbra is fennáll, forduljon a rendszergazdához."
+
+msgid "Failed to connect to the TOTP verification service. Please try again later. If the problem persists, contact your system administrator."
+msgstr "Nem sikerült csatlakozni a TOTP ellenőrző szolgáltatáshoz. Kérjük, próbálja meg később. Ha a probléma továbbra is fennáll, forduljon a rendszergazdához."
+
+msgid "The TOTP verification service returned an invalid response. Please contact your system administrator."
+msgstr "A TOTP ellenőrző szolgáltatás érvénytelen választ adott. Kérjük, forduljon a rendszergazdához."
+
+msgid "TOTP verification failed after the maximum number of attempts. Please try logging in again."
+msgstr "A TOTP ellenőrzés sikertelen volt a maximális próbálkozások száma után. Kérjük, próbáljon meg újra bejelentkezni."

@@ -36,3 +36,39 @@ msgstr "You must configure two-factor authentication before you can log in."
 
 msgid "Please visit the following URL to set up TOTP:"
 msgstr "Please visit the following URL to set up TOTP:"
+
+msgid "TOTP not registered"
+msgstr "TOTP not registered"
+
+msgid "Database query error"
+msgstr "Database query error"
+
+msgid "Database error"
+msgstr "Database error"
+
+msgid "Network error"
+msgstr "Network error"
+
+msgid "Invalid response"
+msgstr "Invalid response"
+
+msgid "TOTP verification failed"
+msgstr "TOTP verification failed"
+
+msgid "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
+msgstr "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
+
+msgid "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
+msgstr "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
+
+msgid "Failed to connect to the authentication database or execute a database query. Please try again later. If the problem persists, contact your system administrator."
+msgstr "Failed to connect to the authentication database or execute a database query. Please try again later. If the problem persists, contact your system administrator."
+
+msgid "Failed to connect to the TOTP verification service. Please try again later. If the problem persists, contact your system administrator."
+msgstr "Failed to connect to the TOTP verification service. Please try again later. If the problem persists, contact your system administrator."
+
+msgid "The TOTP verification service returned an invalid response. Please contact your system administrator."
+msgstr "The TOTP verification service returned an invalid response. Please contact your system administrator."
+
+msgid "TOTP verification failed after the maximum number of attempts. Please try logging in again."
+msgstr "TOTP verification failed after the maximum number of attempts. Please try logging in again."
