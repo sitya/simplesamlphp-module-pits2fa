@@ -28,7 +28,11 @@ class TOTP extends ProcessingFilter
     private const TOTP_REGISTRATION_URL = 'https://pits.example.com';
 
     private bool $mandatory;
+    private string $usernameAttribute;
     private string $pitsDsn;
+    private string $pitsUsername;
+    private string $pitsPassword;
+    private array $pitsOptions;
     private string $pitsUrl;
     private string $pitsToken;
 
@@ -43,11 +47,28 @@ class TOTP extends ProcessingFilter
         parent::__construct($config, $reserved);
 
         $this->mandatory = $config['2fa_mandatory'] ?? false;
-        
+
+        if (!isset($config['username_attribute'])) {
+            throw new SspException('Missing required configuration parameter: username_attribute');
+        }
+        $this->usernameAttribute = $config['username_attribute'];
+
         if (!isset($config['pits_dsn'])) {
             throw new SspException('Missing required configuration parameter: pits_dsn');
         }
         $this->pitsDsn = $config['pits_dsn'];
+
+        if (!isset($config['pits_username'])) {
+            throw new SspException('Missing required configuration parameter: pits_username');
+        }
+        $this->pitsUsername = $config['pits_username'];
+
+        if (!isset($config['pits_password'])) {
+            throw new SspException('Missing required configuration parameter: pits_password');
+        }
+        $this->pitsPassword = $config['pits_password'];
+
+        $this->pitsOptions = $config['pits_options'] ?? [];
 
         if (!isset($config['pits_url'])) {
             throw new SspException('Missing required configuration parameter: pits_url');
@@ -71,8 +92,12 @@ class TOTP extends ProcessingFilter
 
         Logger::info('TOTP: Starting 2FA processing');
 
-        // Get username from attributes
-        $username = $this->getUsername($state);
+        // Get username from configured attribute
+        $attributes = $state['Attributes'];
+        if (!isset($attributes[$this->usernameAttribute][0]) || empty($attributes[$this->usernameAttribute][0])) {
+            throw new SspException('Username attribute "' . $this->usernameAttribute . '" not found or empty in state');
+        }
+        $username = $attributes[$this->usernameAttribute][0];
         Logger::info('TOTP: Processing authentication for user: ' . $username);
         
         // Check if user has TOTP registered
@@ -108,29 +133,6 @@ class TOTP extends ProcessingFilter
     }
 
     /**
-     * Extract username from state attributes.
-     *
-     * @param array $state Authentication state
-     * @return string Username
-     * @throws SspException If username cannot be determined
-     */
-    private function getUsername(array $state): string
-    {
-        $attributes = $state['Attributes'];
-
-        // Try common username attributes
-        $usernameAttrs = ['uid', 'eduPersonPrincipalName', 'mail', 'username'];
-        
-        foreach ($usernameAttrs as $attr) {
-            if (isset($attributes[$attr][0]) && !empty($attributes[$attr][0])) {
-                return $attributes[$attr][0];
-            }
-        }
-
-        throw new SspException('Unable to determine username from attributes');
-    }
-
-    /**
      * Check if user has TOTP registered in PITS database.
      *
      * @param string $username The username to check
@@ -141,14 +143,18 @@ class TOTP extends ProcessingFilter
     {
         try {
             Logger::debug('TOTP: Connecting to PITS database');
+            //
+            // Merge default options with user-provided options
+            $defaultOptions = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            ];
+            $options = array_merge($defaultOptions, $this->pitsOptions);
+
             $pdo = new PDO(
                 $this->pitsDsn,
-                null,
-                null,
-                [
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                    PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
-                ]
+                $this->pitsUsername,
+                $this->pitsPassword,
+                $options
             );
             Logger::debug('TOTP: Database connection established');
 
@@ -159,7 +165,7 @@ class TOTP extends ProcessingFilter
 
             $result = $stmt->fetch(PDO::FETCH_NUM);
             Logger::debug('TOTP: Stored procedure result: ' . var_export($result, true));
-            
+
             if ($result === false || !isset($result[0])) {
                 Logger::error('TOTP: Database query returned unexpected result');
                 throw new SspError('DBQUERYERROR', 'Database query returned unexpected result');
@@ -227,7 +233,7 @@ class TOTP extends ProcessingFilter
 
         $verified = $data['result'] === 'OK';
         Logger::info('TOTP: Verification result for user ' . $username . ': ' . ($verified ? 'SUCCESS' : 'FAILED'));
-        
+
         return $verified;
     }
 
@@ -240,10 +246,10 @@ class TOTP extends ProcessingFilter
     {
         Logger::debug('TOTP: handleVerification called with state ID: ' . substr($stateId, 0, 8) . '...');
         $state = State::loadState($stateId, 'totp:request');
-        
+
         $username = $state['totp:username'] ?? 'unknown';
         $currentAttempt = ($state['totp:attempts'] ?? 0) + 1;
-        
+
         Logger::info('TOTP: Processing verification attempt ' . $currentAttempt . '/' . self::MAX_ATTEMPTS . ' for user: ' . $username);
 
         if (!isset($_POST['totp_code'])) {
@@ -255,14 +261,14 @@ class TOTP extends ProcessingFilter
 
         $code = trim($_POST['totp_code']);
         Logger::debug('TOTP: Code submitted (length: ' . strlen($code) . ')');
-        
+
         // Don't log the actual TOTP code for security reasons
-        
+
         $filter = new self($state['totp:config'] ?? [], null);
-        
+
         try {
             $verified = $filter->verifyTOTP($username, $code);
-            
+
             if ($verified) {
                 Logger::info('TOTP: Verification SUCCESSFUL for user: ' . $username);
                 // Success - continue authentication
@@ -282,7 +288,7 @@ class TOTP extends ProcessingFilter
         // Verification failed
         $state['totp:attempts']++;
         Logger::warning('TOTP: Verification FAILED for user: ' . $username . ' (attempt ' . $state['totp:attempts'] . '/' . self::MAX_ATTEMPTS . ')');
-        
+
         if ($state['totp:attempts'] >= self::MAX_ATTEMPTS) {
             // Maximum attempts exceeded
             Logger::error('TOTP: Maximum attempts (' . self::MAX_ATTEMPTS . ') exceeded for user: ' . $username);
@@ -306,12 +312,12 @@ class TOTP extends ProcessingFilter
     {
         $globalConfig = Configuration::getInstance();
         $t = new \SimpleSAML\XHTML\Template($globalConfig, 'totp:verify.twig');
-        
+
         $t->data['stateId'] = State::saveState($state, 'totp:request');
         $t->data['error'] = $state['totp:error'] ?? false;
         $t->data['attempts'] = $state['totp:attempts'] ?? 0;
         $t->data['maxAttempts'] = self::MAX_ATTEMPTS;
-        
+
         $t->send();
         exit();
     }
