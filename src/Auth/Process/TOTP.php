@@ -6,6 +6,7 @@ namespace SimpleSAML\Module\totp\Auth\Process;
 
 use PDO;
 use PDOException;
+use SimpleSAML\Auth\ProcessingChain;
 use SimpleSAML\Auth\ProcessingFilter;
 use SimpleSAML\Auth\State;
 use SimpleSAML\Configuration;
@@ -121,13 +122,27 @@ class TOTP extends ProcessingFilter
         // User has TOTP, require verification
         $state['totp:username'] = $username;
         $state['totp:attempts'] = 0;
+        
+        // Save configuration to state so we can reconstruct the filter later
+        $state['totp:config'] = [
+            '2fa_mandatory' => $this->mandatory,
+            'username_attribute' => $this->usernameAttribute,
+            'pits_dsn' => $this->pitsDsn,
+            'pits_username' => $this->pitsUsername,
+            'pits_password' => $this->pitsPassword,
+            'pits_options' => $this->pitsOptions,
+            'pits_url' => $this->pitsUrl,
+            'pits_token' => $this->pitsToken,
+        ];
 
         $id = State::saveState($state, 'totp:request');
         Logger::debug('TOTP: Saved state with ID: ' . substr($id, 0, 8) . '...');
         
         $url = Module::getModuleURL('totp/verify');
         Logger::debug('TOTP: Redirecting to verification form: ' . $url);
-        HTTP::redirectTrustedURL($url, ['StateId' => $id]);
+        
+        $httpUtils = new HTTP();
+        $httpUtils->redirectTrustedURL($url, ['StateId' => $id]);
     }
 
     /**
@@ -272,9 +287,8 @@ class TOTP extends ProcessingFilter
                 // Success - continue authentication
                 unset($state['totp:username']);
                 unset($state['totp:attempts']);
-                State::deleteState($state);
                 Logger::info('TOTP: Continuing authentication flow for user: ' . $username);
-                ProcessingFilter::resumeProcessing($state);
+                ProcessingChain::resumeProcessing($state);
                 return;
             }
         } catch (SspError $e) {
