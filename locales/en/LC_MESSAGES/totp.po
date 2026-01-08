@@ -72,3 +72,15 @@ msgstr "The TOTP verification service returned an invalid response. Please conta
 
 msgid "TOTP verification failed after the maximum number of attempts. Please try logging in again."
 msgstr "TOTP verification failed after the maximum number of attempts. Please try logging in again."
+
+msgid "You have exceeded the maximum number of verification attempts. For security reasons, you must restart the authentication process."
+msgstr "You have exceeded the maximum number of verification attempts. For security reasons, you must restart the authentication process."
+
+msgid "Please close this page and try to log in again from the beginning."
+msgstr "Please close this page and try to log in again from the beginning."
+
+msgid "Return to login"
+msgstr "Return to login"
+
+msgid "TOTP Verification Failed"
+msgstr "TOTP Verification Failed"

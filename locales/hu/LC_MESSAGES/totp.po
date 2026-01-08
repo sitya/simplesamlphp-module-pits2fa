@@ -72,3 +72,15 @@ msgstr "A TOTP ellenőrző szolgáltatás érvénytelen választ adott. Kérjük
 
 msgid "TOTP verification failed after the maximum number of attempts. Please try logging in again."
 msgstr "A TOTP ellenőrzés sikertelen volt a maximális próbálkozások száma után. Kérjük, próbáljon meg újra bejelentkezni."
+
+msgid "You have exceeded the maximum number of verification attempts. For security reasons, you must restart the authentication process."
+msgstr "Túllépte az ellenőrző próbálkozások maximális számát. Biztonsági okokból újra kell indítania a hitelesítési folyamatot."
+
+msgid "Please close this page and try to log in again from the beginning."
+msgstr "Kérjük, zárja be ezt az oldalt, és próbáljon meg újra bejelentkezni az elejétől."
+
+msgid "Return to login"
+msgstr "Vissza a bejelentkezéshez"
+
+msgid "TOTP Verification Failed"
+msgstr "TOTP ellenőrzés sikertelen"

@@ -304,14 +304,17 @@ class TOTP extends ProcessingFilter
         Logger::warning('TOTP: Verification FAILED for user: ' . $username . ' (attempt ' . $state['totp:attempts'] . '/' . self::MAX_ATTEMPTS . ')');
 
         if ($state['totp:attempts'] >= self::MAX_ATTEMPTS) {
-            // Maximum attempts exceeded
+            // Maximum attempts exceeded - show informational page instead of error
             Logger::error('TOTP: Maximum attempts (' . self::MAX_ATTEMPTS . ') exceeded for user: ' . $username);
+            
             // Clean up TOTP-specific state data
             unset($state['totp:username']);
             unset($state['totp:attempts']);
             unset($state['totp:error']);
             unset($state['totp:config']);
-            throw new SspError(ErrorCodes::TOTPFAILED, null, null, new ErrorCodes());
+            
+            // Show max attempts page
+            self::showMaxAttemptsPage($state);
         }
 
         // Show form again with error
@@ -335,6 +338,26 @@ class TOTP extends ProcessingFilter
         $t->data['error'] = $state['totp:error'] ?? false;
         $t->data['attempts'] = $state['totp:attempts'] ?? 0;
         $t->data['maxAttempts'] = self::MAX_ATTEMPTS;
+
+        $t->send();
+        exit();
+    }
+
+    /**
+     * Show max attempts exceeded page.
+     *
+     * @param array $state Authentication state
+     */
+    private static function showMaxAttemptsPage(array $state): void
+    {
+        $globalConfig = Configuration::getInstance();
+        $t = new \SimpleSAML\XHTML\Template($globalConfig, 'totp:max_attempts.twig');
+
+        // Provide a logout URL if available to allow user to restart
+        if (isset($state['Destination']['url'])) {
+            // Get the original service URL to redirect back to
+            $t->data['logoutURL'] = $state['Destination']['url'];
+        }
 
         $t->send();
         exit();
