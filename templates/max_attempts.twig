@@ -21,14 +21,6 @@
     <p>{{ 'You have exceeded the maximum number of verification attempts. For security reasons, you must restart the authentication process.'|trans }}</p>
 
     <div class="pure-form-message">
-        <p>{{ 'Please close this page and try to log in again from the beginning.'|trans }}</p>
+        <p><strong>{{ 'Please close this page and try to log in again from the beginning.'|trans }}</strong></p>
     </div>
-
-    {% if logoutURL is defined %}
-    <div class="center-form">
-        <a href="{{ logoutURL }}" class="pure-button pure-button-red">
-            {{ 'Return to login'|trans }}
-        </a>
-    </div>
-    {% endif %}
 {% endblock %}

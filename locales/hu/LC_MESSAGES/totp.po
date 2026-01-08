@@ -79,8 +79,5 @@ msgstr "Túllépte az ellenőrző próbálkozások maximális számát. Biztons�
 msgid "Please close this page and try to log in again from the beginning."
 msgstr "Kérjük, zárja be ezt az oldalt, és próbáljon meg újra bejelentkezni az elejétől."
 
-msgid "Return to login"
-msgstr "Vissza a bejelentkezéshez"
-
 msgid "TOTP Verification Failed"
 msgstr "TOTP ellenőrzés sikertelen"

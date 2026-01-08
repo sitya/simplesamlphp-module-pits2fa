@@ -79,8 +79,5 @@ msgstr "You have exceeded the maximum number of verification attempts. For secur
 msgid "Please close this page and try to log in again from the beginning."
 msgstr "Please close this page and try to log in again from the beginning."
 
-msgid "Return to login"
-msgstr "Return to login"
-
 msgid "TOTP Verification Failed"
 msgstr "TOTP Verification Failed"

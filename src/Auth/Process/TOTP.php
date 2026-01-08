@@ -353,11 +353,8 @@ class TOTP extends ProcessingFilter
         $globalConfig = Configuration::getInstance();
         $t = new \SimpleSAML\XHTML\Template($globalConfig, 'totp:max_attempts.twig');
 
-        // Provide a logout URL if available to allow user to restart
-        if (isset($state['Destination']['url'])) {
-            // Get the original service URL to redirect back to
-            $t->data['logoutURL'] = $state['Destination']['url'];
-        }
+        // Don't provide any URL - user should close the page and start fresh
+        // The template will handle this by showing instructions only
 
         $t->send();
         exit();
