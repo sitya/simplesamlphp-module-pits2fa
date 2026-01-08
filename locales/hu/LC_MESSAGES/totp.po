@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: totp\n"
+
+msgid "Two-Factor Authentication"
+msgstr "Kétfaktoros hitelesítés"
+
+msgid "TOTP Verification"
+msgstr "TOTP ellenőrzés"
+
+msgid "Please enter your 6-digit verification code from your authenticator app."
+msgstr "Kérjük, adja meg a 6 jegyű ellenőrző kódot a hitelesítő alkalmazásából."
+
+msgid "Verification Code"
+msgstr "Ellenőrző kód"
+
+msgid "Verify"
+msgstr "Ellenőrzés"
+
+msgid "Invalid verification code. Please try again."
+msgstr "Érvénytelen ellenőrző kód. Kérjük, próbálja újra."
+
+msgid "Attempts remaining:"
+msgstr "Hátralévő próbálkozások:"
+
+msgid "Too many failed attempts. Authentication failed."
+msgstr "Túl sok sikertelen próbálkozás. A hitelesítés meghiúsult."
+
+msgid "You must configure two-factor authentication before you can log in."
+msgstr "A bejelentkezés előtt konfigurálnia kell a kétfaktoros hitelesítést."
+
+msgid "Please visit the following URL to set up TOTP:"
+msgstr "Kérjük, látogassa meg az alábbi URL-t a TOTP beállításához:"

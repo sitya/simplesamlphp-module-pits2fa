@@ -1,0 +1,38 @@
+msgid ""
+msgstr ""
+"Content-Transfer-Encoding: 8bit\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Project-Id-Version: SimpleSAMLphp\n"
+"X-Domain: totp\n"
+
+msgid "Two-Factor Authentication"
+msgstr "Two-Factor Authentication"
+
+msgid "TOTP Verification"
+msgstr "TOTP Verification"
+
+msgid "Please enter your 6-digit verification code from your authenticator app."
+msgstr "Please enter your 6-digit verification code from your authenticator app."
+
+msgid "Verification Code"
+msgstr "Verification Code"
+
+msgid "Verify"
+msgstr "Verify"
+
+msgid "Invalid verification code. Please try again."
+msgstr "Invalid verification code. Please try again."
+
+msgid "Attempts remaining:"
+msgstr "Attempts remaining:"
+
+msgid "Too many failed attempts. Authentication failed."
+msgstr "Too many failed attempts. Authentication failed."
+
+msgid "You must configure two-factor authentication before you can log in."
+msgstr "You must configure two-factor authentication before you can log in."
+
+msgid "Please visit the following URL to set up TOTP:"
+msgstr "Please visit the following URL to set up TOTP:"

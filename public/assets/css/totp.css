@@ -1,0 +1,38 @@
+/*
+ * SimpleSAMLphp TOTP Module CSS
+ * Additional styling for TOTP verification form
+ */
+
+/* Center the TOTP code input and make it larger for better UX */
+#totp_code {
+    font-size: 1.5rem;
+    text-align: center;
+    letter-spacing: 0.5rem;
+    padding: 0.75rem 1rem;
+    width: 100%;
+    max-width: 20rem;
+}
+
+/* Message box styling for error messages */
+.message-box.error {
+    border-left: 4px solid #d32f2f;
+}
+
+.message-box.error h3 {
+    color: #d32f2f;
+    margin-top: 0;
+}
+
+/* Ensure form is centered and has proper spacing */
+.center-form {
+    margin: 2rem auto;
+    max-width: 40rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #totp_code {
+        font-size: 1.25rem;
+        letter-spacing: 0.25rem;
+    }
+}

@@ -1,42 +1,52 @@
-{% extends "base.twig" %}
+{% set pagetitle = 'TOTP Verification'|trans %}
 
-{% block title %}{{ 'TOTP Verification'|trans }}{% endblock %}
+{% extends "@core/base.twig" %}
+
+{% block postload %}
+    <link rel="stylesheet" href="{{ asset('css/totp.css', 'totp') }}" />
+{% endblock %}
 
 {% block content %}
-<div class="totp-verification">
-    <h2>{{ 'Two-Factor Authentication'|trans }}</h2>
-    
-    {% if error %}
-    <div class="alert alert-danger">
-        <p>{{ 'Invalid verification code. Please try again.'|trans }}</p>
-        <p>{{ 'Attempts remaining:'|trans }} {{ maxAttempts - attempts }}</p>
+    {% if error -%}
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="message-box error">
+                <h3>{{ 'Invalid verification code. Please try again.'|trans }}</h3>
+                <p>{{ 'Attempts remaining:'|trans }} {{ maxAttempts - attempts }}</p>
+            </div>
+        </div>
     </div>
-    {% endif %}
-    
+    {%- endif %}
+
+    <h1>{{ 'Two-Factor Authentication'|trans }}</h1>
+
     <p>{{ 'Please enter your 6-digit verification code from your authenticator app.'|trans }}</p>
-    
-    <form method="post" action="{{ moduleURL('totp/verify.php') }}">
-        <input type="hidden" name="StateId" value="{{ stateId }}" />
-        
-        <div class="form-group">
-            <label for="totp_code">{{ 'Verification Code'|trans }}</label>
-            <input 
-                type="text" 
-                id="totp_code" 
-                name="totp_code" 
-                class="form-control" 
-                autocomplete="one-time-code"
-                inputmode="numeric"
-                pattern="[0-9]{6}"
-                maxlength="6"
-                required
-                autofocus
-            />
-        </div>
-        
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">{{ 'Verify'|trans }}</button>
-        </div>
-    </form>
-</div>
+
+    <div class="center-form">
+        <form method="post" action="{{ moduleURL('totp/verify.php') }}" class="pure-form pure-form-aligned">
+            <input type="hidden" name="StateId" value="{{ stateId }}" />
+            
+            <div class="pure-control-group">
+                <label for="totp_code">{{ 'Verification Code'|trans }}</label>
+                <input 
+                    type="text" 
+                    id="totp_code" 
+                    name="totp_code" 
+                    class="edge" 
+                    autocomplete="one-time-code"
+                    inputmode="numeric"
+                    pattern="[0-9]{6}"
+                    maxlength="6"
+                    required
+                    autofocus
+                />
+            </div>
+            
+            <div class="pure-control-group center">
+                <button class="pure-button pure-button-red pure-input-1-2 pure-input-sm-1-1 right" type="submit">
+                    {{ 'Verify'|trans }}
+                </button>
+            </div>
+        </form>
+    </div>
 {% endblock %}
