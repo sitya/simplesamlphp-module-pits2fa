@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-'authproc' = [
+'authproc' => [
     // Add TOTP 2FA filter
     // Priority 100 ensures it runs after primary authentication
     100 => [
@@ -25,5 +25,7 @@ declare(strict_types=1);
         'pits_url' => 'https://pits.example.com/api/verify',
         // PITS API token
         'pits_token' => 'your_secure_token_here',
+        // PITS registration URL (shown to users who need to register TOTP)
+        'pits_registration_url' => 'https://pits.example.com',
     ],
 ];

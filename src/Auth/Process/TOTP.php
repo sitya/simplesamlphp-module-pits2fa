@@ -27,7 +27,6 @@ class TOTP extends ProcessingFilter
 {
     private const MAX_ATTEMPTS = 3;
     private const SERVICE_NAME = 'eduid';
-    private const TOTP_REGISTRATION_URL = 'https://pits.example.com';
 
     private bool $mandatory;
     private string $usernameAttribute;
@@ -37,6 +36,7 @@ class TOTP extends ProcessingFilter
     private array $pitsOptions;
     private string $pitsUrl;
     private string $pitsToken;
+    private string $pitsRegistrationUrl;
 
     /**
      * Initialize the filter.
@@ -81,6 +81,11 @@ class TOTP extends ProcessingFilter
             throw new SspException('Missing required configuration parameter: pits_token');
         }
         $this->pitsToken = $config['pits_token'];
+
+        if (!isset($config['pits_registration_url'])) {
+            throw new SspException('Missing required configuration parameter: pits_registration_url');
+        }
+        $this->pitsRegistrationUrl = $config['pits_registration_url'];
     }
 
     /**
@@ -127,8 +132,8 @@ class TOTP extends ProcessingFilter
         if (!$hasTOTP) {
             if ($this->mandatory) {
                 Logger::warning('TOTP: User ' . $username . ' does not have TOTP registered (mandatory mode)');
-                // User must register TOTP
-                throw new SspError(ErrorCodes::NOTOTPREGISTERED, null, null, new ErrorCodes());
+                // User must register TOTP - show informational page
+                self::showRegisterRequiredPage($state);
             }
             Logger::info('TOTP: User ' . $username . ' does not have TOTP, continuing (optional mode)');
             // 2FA not mandatory, allow continuation
@@ -150,6 +155,7 @@ class TOTP extends ProcessingFilter
             'pits_options' => $this->pitsOptions,
             'pits_url' => $this->pitsUrl,
             'pits_token' => $this->pitsToken,
+            'pits_registration_url' => $this->pitsRegistrationUrl,
         ];
 
         $id = State::saveState($state, 'totp:request');
@@ -388,6 +394,28 @@ class TOTP extends ProcessingFilter
 
         // Don't provide any URL - user should close the page and start fresh
         // The template will handle this by showing instructions only
+
+        $t->send();
+        exit();
+    }
+
+    /**
+     * Show TOTP registration required page.
+     *
+     * @param array $state Authentication state
+     */
+    private static function showRegisterRequiredPage(array $state): void
+    {
+        $globalConfig = Configuration::getInstance();
+        $t = new \SimpleSAML\XHTML\Template($globalConfig, 'totp:register_required.twig');
+
+        // Pass the registration URL from configuration
+        if (isset($state['totp:config']['pits_registration_url'])) {
+            $t->data['registrationUrl'] = $state['totp:config']['pits_registration_url'];
+        } else {
+            // Fallback to default if not in state (shouldn't happen)
+            $t->data['registrationUrl'] = 'https://pits.example.com';
+        }
 
         $t->send();
         exit();

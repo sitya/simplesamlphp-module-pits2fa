@@ -55,8 +55,8 @@ msgstr "Invalid response"
 msgid "TOTP verification failed"
 msgstr "TOTP verification failed"
 
-msgid "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
-msgstr "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
+msgid "You do not have TOTP (two-factor authentication) registered."
+msgstr "You do not have TOTP (two-factor authentication) registered."
 
 msgid "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
 msgstr "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
@@ -81,3 +81,9 @@ msgstr "Please close this page and try to log in again from the beginning."
 
 msgid "TOTP Verification Failed"
 msgstr "TOTP Verification Failed"
+
+msgid "TOTP Registration Required"
+msgstr "TOTP Registration Required"
+
+msgid "After registering TOTP, please return to this page and try to log in again."
+msgstr "After registering TOTP, please return to this page and try to log in again."

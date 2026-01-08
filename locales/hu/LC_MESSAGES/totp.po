@@ -55,8 +55,8 @@ msgstr "Érvénytelen válasz"
 msgid "TOTP verification failed"
 msgstr "TOTP ellenőrzés sikertelen"
 
-msgid "You do not have TOTP (two-factor authentication) registered. Please register TOTP at https://pits.example.com before attempting to log in."
-msgstr "Önnek nincs regisztrált TOTP (kétfaktoros hitelesítés). Kérjük, regisztráljon TOTP-t a https://pits.example.com oldalon a bejelentkezés előtt."
+msgid "You do not have TOTP (two-factor authentication) registered."
+msgstr "Önnek nincs regisztrált TOTP (kétfaktoros hitelesítés)."
 
 msgid "A database query returned an unexpected result. Please contact your system administrator if this problem persists."
 msgstr "Az adatbázis lekérdezés váratlan eredményt adott. Ha a probléma továbbra is fennáll, kérjük, forduljon a rendszergazdához."
@@ -81,3 +81,9 @@ msgstr "Kérjük, zárja be ezt az oldalt, és próbáljon meg újra bejelentkez
 
 msgid "TOTP Verification Failed"
 msgstr "TOTP ellenőrzés sikertelen"
+
+msgid "TOTP Registration Required"
+msgstr "TOTP regisztráció szükséges"
+
+msgid "After registering TOTP, please return to this page and try to log in again."
+msgstr "A TOTP regisztrálása után kérjük, térjen vissza erre az oldalra és próbáljon meg újra bejelentkezni."

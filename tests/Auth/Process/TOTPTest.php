@@ -110,6 +110,7 @@ class TOTPTest extends TestCase
             'pits_password' => 'test_pass',
             'pits_url' => 'https://example.com/verify',
             'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
         ], null);
 
         $this->assertInstanceOf(TOTP::class, $filter);
@@ -127,6 +128,7 @@ class TOTPTest extends TestCase
             'pits_password' => 'test_pass',
             'pits_url' => 'https://example.com/verify',
             'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
         ], null);
 
         // Since we can't directly access private properties,
@@ -147,6 +149,7 @@ class TOTPTest extends TestCase
             'pits_password' => 'test_pass',
             'pits_url' => 'https://example.com/verify',
             'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
             '2fa_mandatory' => true,
         ], null);
 
@@ -165,6 +168,7 @@ class TOTPTest extends TestCase
             'pits_password' => 'test_pass',
             'pits_url' => 'https://example.com/verify',
             'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
         ], null);
 
         $this->assertInstanceOf(TOTP::class, $filter);
@@ -185,6 +189,7 @@ class TOTPTest extends TestCase
             ],
             'pits_url' => 'https://example.com/verify',
             'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
         ], null);
 
         $this->assertInstanceOf(TOTP::class, $filter);

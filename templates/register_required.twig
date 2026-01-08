@@ -1,0 +1,29 @@
+{% set pagetitle = 'TOTP Registration Required'|trans %}
+
+{% extends "@core/base.twig" %}
+
+{% block postload %}
+    <link rel="stylesheet" href="{{ asset('css/totp.css', 'totp') }}" />
+{% endblock %}
+
+{% block content %}
+    <div class="pure-g">
+        <div class="pure-u-1">
+            <div class="message-box error">
+                <h3>{{ 'TOTP not registered'|trans }}</h3>
+                <p>{{ 'You must configure two-factor authentication before you can log in.'|trans }}</p>
+            </div>
+        </div>
+    </div>
+
+    <h1>{{ 'Two-Factor Authentication'|trans }}</h1>
+
+    <p>{{ 'You do not have TOTP (two-factor authentication) registered.'|trans }}</p>
+
+    <div class="pure-form-message">
+        <p><strong>{{ 'Please visit the following URL to set up TOTP:'|trans }}</strong></p>
+        <p><a href="{{ registrationUrl }}" class="pure-button pure-button-red" target="_blank">{{ registrationUrl }}</a></p>
+    </div>
+
+    <p>{{ 'After registering TOTP, please return to this page and try to log in again.'|trans }}</p>
+{% endblock %}
