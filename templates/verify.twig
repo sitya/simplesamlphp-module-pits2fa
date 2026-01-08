@@ -15,7 +15,7 @@
     
     <p>{{ 'Please enter your 6-digit verification code from your authenticator app.'|trans }}</p>
     
-    <form method="post" action="{{ moduleURL('totp/verify') }}">
+    <form method="post" action="{{ moduleURL('totp/verify.php') }}">
         <input type="hidden" name="StateId" value="{{ stateId }}" />
         
         <div class="form-group">

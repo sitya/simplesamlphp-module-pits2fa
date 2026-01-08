@@ -1,6 +1,13 @@
 # Routes for the totp module
 
-# TOTP verification form
+# TOTP verification form (with .php extension for backward compatibility)
+verify_php:
+    path: /verify.php
+    defaults:
+        _controller: \SimpleSAML\Module\totp\Controller\Verify::main
+    methods: [GET, POST]
+
+# TOTP verification form (without extension, for v2 clean URLs)
 verify:
     path: /verify
     defaults:

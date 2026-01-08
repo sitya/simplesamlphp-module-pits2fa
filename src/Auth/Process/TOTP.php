@@ -138,7 +138,7 @@ class TOTP extends ProcessingFilter
         $id = State::saveState($state, 'totp:request');
         Logger::debug('TOTP: Saved state with ID: ' . substr($id, 0, 8) . '...');
         
-        $url = Module::getModuleURL('totp/verify');
+        $url = Module::getModuleURL('totp/verify.php');
         Logger::debug('TOTP: Redirecting to verification form: ' . $url);
         
         $httpUtils = new HTTP();
