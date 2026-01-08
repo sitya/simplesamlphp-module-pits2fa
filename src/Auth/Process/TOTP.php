@@ -132,6 +132,8 @@ class TOTP extends ProcessingFilter
         if (!$hasTOTP) {
             if ($this->mandatory) {
                 Logger::warning('TOTP: User ' . $username . ' does not have TOTP registered (mandatory mode)');
+                // Save registration URL to state before showing page
+                $state['totp:registration_url'] = $this->pitsRegistrationUrl;
                 // User must register TOTP - show informational page
                 self::showRegisterRequiredPage($state);
             }
@@ -409,13 +411,8 @@ class TOTP extends ProcessingFilter
         $globalConfig = Configuration::getInstance();
         $t = new \SimpleSAML\XHTML\Template($globalConfig, 'totp:register_required.twig');
 
-        // Pass the registration URL from configuration
-        if (isset($state['totp:config']['pits_registration_url'])) {
-            $t->data['registrationUrl'] = $state['totp:config']['pits_registration_url'];
-        } else {
-            // Fallback to default if not in state (shouldn't happen)
-            $t->data['registrationUrl'] = 'https://pits.example.com';
-        }
+        // Pass the registration URL from state
+        $t->data['registrationUrl'] = $state['totp:registration_url'] ?? 'https://pits.example.com';
 
         $t->send();
         exit();

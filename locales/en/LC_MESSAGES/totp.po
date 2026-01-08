@@ -87,3 +87,6 @@ msgstr "TOTP Registration Required"
 
 msgid "After registering TOTP, please return to this page and try to log in again."
 msgstr "After registering TOTP, please return to this page and try to log in again."
+
+msgid "Register TOTP"
+msgstr "Register TOTP"

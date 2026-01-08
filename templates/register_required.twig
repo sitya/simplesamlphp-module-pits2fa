@@ -20,10 +20,13 @@
 
     <p>{{ 'You do not have TOTP (two-factor authentication) registered.'|trans }}</p>
 
-    <div class="pure-form-message">
-        <p><strong>{{ 'Please visit the following URL to set up TOTP:'|trans }}</strong></p>
-        <p><a href="{{ registrationUrl }}" class="pure-button pure-button-red" target="_blank">{{ registrationUrl }}</a></p>
+    <div class="center-form" style="margin-top: 2rem;">
+        <a href="{{ registrationUrl }}" class="pure-button pure-button-red pure-input-1-2 pure-input-sm-1-1" target="_blank">
+            {{ 'Register TOTP'|trans }}
+        </a>
     </div>
 
-    <p>{{ 'After registering TOTP, please return to this page and try to log in again.'|trans }}</p>
+    <div class="pure-form-message" style="margin-top: 2rem;">
+        <p>{{ 'After registering TOTP, please return to this page and try to log in again.'|trans }}</p>
+    </div>
 {% endblock %}
