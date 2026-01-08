@@ -13,6 +13,7 @@ use SimpleSAML\Error\Error as SspError;
 use SimpleSAML\Error\Exception as SspException;
 use SimpleSAML\Logger;
 use SimpleSAML\Module;
+use SimpleSAML\Module\totp\Error\ErrorCodes;
 use SimpleSAML\Utils\HTTP;
 
 /**
@@ -109,10 +110,7 @@ class TOTP extends ProcessingFilter
             if ($this->mandatory) {
                 Logger::warning('TOTP: User ' . $username . ' does not have TOTP registered (mandatory mode)');
                 // User must register TOTP
-                throw new SspError(
-                    'NOTOTPREGISTERED',
-                    'Please register TOTP at ' . self::TOTP_REGISTRATION_URL
-                );
+                throw new SspError(ErrorCodes::NOTOTPREGISTERED, null, null, new ErrorCodes());
             }
             Logger::info('TOTP: User ' . $username . ' does not have TOTP, continuing (optional mode)');
             // 2FA not mandatory, allow continuation
@@ -168,7 +166,7 @@ class TOTP extends ProcessingFilter
 
             if ($result === false || !isset($result[0])) {
                 Logger::error('TOTP: Database query returned unexpected result');
-                throw new SspError('DBQUERYERROR', 'Database query returned unexpected result');
+                throw new SspError(ErrorCodes::DBQUERYERROR, null, null, new ErrorCodes());
             }
 
             $status = (int)$result[0] === 1;
@@ -176,7 +174,7 @@ class TOTP extends ProcessingFilter
             return $status;
         } catch (PDOException $e) {
             Logger::error('TOTP: Database error: ' . $e->getMessage());
-            throw new SspError('DBERROR', 'Database connection or query failed');
+            throw new SspError(ErrorCodes::DBERROR, $e, null, new ErrorCodes());
         }
     }
 
@@ -220,7 +218,7 @@ class TOTP extends ProcessingFilter
         
         if ($response === false) {
             Logger::error('TOTP: Failed to connect to PITS verification service at: ' . $this->pitsUrl);
-            throw new SspError('NETWORKERROR', 'Failed to connect to verification service');
+            throw new SspError(ErrorCodes::NETWORKERROR, null, null, new ErrorCodes());
         }
 
         Logger::debug('TOTP: Received response from PITS API');
@@ -228,7 +226,7 @@ class TOTP extends ProcessingFilter
         
         if (!is_array($data) || !isset($data['result'])) {
             Logger::error('TOTP: Invalid response format from PITS service: ' . substr($response, 0, 100));
-            throw new SspError('INVALIDRESPONSE', 'Invalid response from verification service');
+            throw new SspError(ErrorCodes::INVALIDRESPONSE, null, null, new ErrorCodes());
         }
 
         $verified = $data['result'] === 'OK';
@@ -293,7 +291,7 @@ class TOTP extends ProcessingFilter
             // Maximum attempts exceeded
             Logger::error('TOTP: Maximum attempts (' . self::MAX_ATTEMPTS . ') exceeded for user: ' . $username);
             State::deleteState($state);
-            throw new SspError('TOTPFAILED', 'TOTP verification failed after maximum attempts');
+            throw new SspError(ErrorCodes::TOTPFAILED, null, null, new ErrorCodes());
         }
 
         // Show form again with error

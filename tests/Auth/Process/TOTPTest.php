@@ -13,6 +13,17 @@ use SimpleSAML\Module\totp\Auth\Process\TOTP;
 class TOTPTest extends TestCase
 {
     /**
+     * Test that constructor requires username_attribute parameter.
+     */
+    public function testConstructorRequiresUsernameAttribute(): void
+    {
+        $this->expectException(\SimpleSAML\Error\Exception::class);
+        $this->expectExceptionMessage('username_attribute');
+
+        new TOTP([], null);
+    }
+
+    /**
      * Test that constructor requires pits_dsn parameter.
      */
     public function testConstructorRequiresPitsDsn(): void
@@ -20,7 +31,9 @@ class TOTPTest extends TestCase
         $this->expectException(\SimpleSAML\Error\Exception::class);
         $this->expectExceptionMessage('pits_dsn');
 
-        new TOTP([], null);
+        new TOTP([
+            'username_attribute' => 'uid',
+        ], null);
     }
 
     /**
@@ -32,6 +45,7 @@ class TOTPTest extends TestCase
         $this->expectExceptionMessage('pits_username');
 
         new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
         ], null);
     }
@@ -45,6 +59,7 @@ class TOTPTest extends TestCase
         $this->expectExceptionMessage('pits_password');
 
         new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
         ], null);
@@ -59,6 +74,7 @@ class TOTPTest extends TestCase
         $this->expectExceptionMessage('pits_url');
 
         new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -74,6 +90,7 @@ class TOTPTest extends TestCase
         $this->expectExceptionMessage('pits_token');
 
         new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -87,6 +104,7 @@ class TOTPTest extends TestCase
     public function testConstructorAcceptsValidConfiguration(): void
     {
         $filter = new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -103,6 +121,7 @@ class TOTPTest extends TestCase
     public function testMandatoryDefaultsToFalse(): void
     {
         $filter = new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -122,6 +141,7 @@ class TOTPTest extends TestCase
     public function testMandatoryCanBeSetToTrue(): void
     {
         $filter = new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -139,6 +159,7 @@ class TOTPTest extends TestCase
     public function testPitsOptionsIsOptional(): void
     {
         $filter = new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
@@ -155,6 +176,7 @@ class TOTPTest extends TestCase
     public function testPitsOptionsCanBeProvided(): void
     {
         $filter = new TOTP([
+            'username_attribute' => 'uid',
             'pits_dsn' => 'mysql:host=localhost;dbname=test',
             'pits_username' => 'test_user',
             'pits_password' => 'test_pass',
