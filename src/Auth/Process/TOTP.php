@@ -102,6 +102,23 @@ class TOTP extends ProcessingFilter
         $username = $attributes[$this->usernameAttribute][0];
         Logger::info('TOTP: Processing authentication for user: ' . $username);
         
+        // Check if TOTP was already completed in this session (SSO)
+        $session = \SimpleSAML\Session::getSessionFromRequest();
+        $totpTimestamp = $session->getData('totp:completed', $username);
+        
+        if ($totpTimestamp !== null) {
+            // TOTP was completed earlier in this session
+            $sessionDuration = \SimpleSAML\Configuration::getInstance()->getOptionalInteger('session.duration', 8 * 60 * 60);
+            $elapsed = time() - $totpTimestamp;
+            
+            if ($elapsed < $sessionDuration) {
+                Logger::info('TOTP: Bypassing TOTP verification for user ' . $username . ' - already verified in this session (elapsed: ' . $elapsed . 's)');
+                return;  // Skip TOTP, continue authentication
+            } else {
+                Logger::debug('TOTP: Session TOTP marker expired for user ' . $username . ' (elapsed: ' . $elapsed . 's)');
+            }
+        }
+        
         // Check if user has TOTP registered
         Logger::debug('TOTP: Checking TOTP registration status in PITS database');
         $hasTOTP = $this->checkTOTPRegistration($username);
@@ -284,6 +301,17 @@ class TOTP extends ProcessingFilter
 
             if ($verified) {
                 Logger::info('TOTP: Verification SUCCESSFUL for user: ' . $username);
+                
+                // Store TOTP completion marker in session for SSO
+                $session = \SimpleSAML\Session::getSessionFromRequest();
+                $session->setData(
+                    'totp:completed',
+                    $username,
+                    time(),
+                    \SimpleSAML\Session::DATA_TIMEOUT_SESSION_END
+                );
+                Logger::debug('TOTP: Stored TOTP completion marker in session for user: ' . $username);
+                
                 // Success - continue authentication, clean up TOTP state
                 unset($state['totp:username']);
                 unset($state['totp:attempts']);
@@ -306,6 +334,11 @@ class TOTP extends ProcessingFilter
         if ($state['totp:attempts'] >= self::MAX_ATTEMPTS) {
             // Maximum attempts exceeded - show informational page instead of error
             Logger::error('TOTP: Maximum attempts (' . self::MAX_ATTEMPTS . ') exceeded for user: ' . $username);
+            
+            // Clear session TOTP marker to force re-verification on next login
+            $session = \SimpleSAML\Session::getSessionFromRequest();
+            $session->deleteData('totp:completed', $username);
+            Logger::debug('TOTP: Cleared TOTP session marker for user: ' . $username);
             
             // Clean up TOTP-specific state data
             unset($state['totp:username']);
