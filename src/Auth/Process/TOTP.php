@@ -284,9 +284,11 @@ class TOTP extends ProcessingFilter
 
             if ($verified) {
                 Logger::info('TOTP: Verification SUCCESSFUL for user: ' . $username);
-                // Success - continue authentication
+                // Success - continue authentication, clean up TOTP state
                 unset($state['totp:username']);
                 unset($state['totp:attempts']);
+                unset($state['totp:error']);
+                unset($state['totp:config']);
                 Logger::info('TOTP: Continuing authentication flow for user: ' . $username);
                 ProcessingChain::resumeProcessing($state);
                 return;
@@ -304,7 +306,11 @@ class TOTP extends ProcessingFilter
         if ($state['totp:attempts'] >= self::MAX_ATTEMPTS) {
             // Maximum attempts exceeded
             Logger::error('TOTP: Maximum attempts (' . self::MAX_ATTEMPTS . ') exceeded for user: ' . $username);
-            State::deleteState($state);
+            // Clean up TOTP-specific state data
+            unset($state['totp:username']);
+            unset($state['totp:attempts']);
+            unset($state['totp:error']);
+            unset($state['totp:config']);
             throw new SspError(ErrorCodes::TOTPFAILED, null, null, new ErrorCodes());
         }
 
