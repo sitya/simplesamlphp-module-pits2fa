@@ -89,4 +89,4 @@ msgid "After registering TOTP, please return to this page and try to log in agai
 msgstr "After registering TOTP, please return to this page and try to log in again."
 
 msgid "Register TOTP"
-msgstr "Register TOTP"
+msgstr "Register TOTP for eduID"

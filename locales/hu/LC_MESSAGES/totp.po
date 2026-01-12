@@ -89,4 +89,4 @@ msgid "After registering TOTP, please return to this page and try to log in agai
 msgstr "A TOTP regisztrálása után kérjük, térjen vissza erre az oldalra és próbáljon meg újra bejelentkezni."
 
 msgid "Register TOTP"
-msgstr "TOTP regisztráció"
+msgstr "TOTP regisztráció eduID belépéshez"
