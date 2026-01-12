@@ -30,6 +30,7 @@ class TOTP extends ProcessingFilter
 
     private bool $mandatory;
     private string $usernameAttribute;
+    private ?string $fallbackUsernameAttribute;
     private string $pitsDsn;
     private string $pitsUsername;
     private string $pitsPassword;
@@ -55,6 +56,7 @@ class TOTP extends ProcessingFilter
             throw new SspException('Missing required configuration parameter: username_attribute');
         }
         $this->usernameAttribute = $config['username_attribute'];
+        $this->fallbackUsernameAttribute = $config['fallback_username_attribute'] ?? null;
 
         if (!isset($config['pits_dsn'])) {
             throw new SspException('Missing required configuration parameter: pits_dsn');
@@ -105,10 +107,36 @@ class TOTP extends ProcessingFilter
 
         // Get username from configured attribute
         $attributes = $state['Attributes'];
-        if (!isset($attributes[$this->usernameAttribute][0]) || empty($attributes[$this->usernameAttribute][0])) {
-            throw new SspException('Username attribute "' . $this->usernameAttribute . '" not found or empty in state');
+        $username = null;
+
+        // Try primary attribute first
+        if (isset($attributes[$this->usernameAttribute][0]) && !empty($attributes[$this->usernameAttribute][0])) {
+            $username = $attributes[$this->usernameAttribute][0];
+        } elseif ($this->fallbackUsernameAttribute !== null
+                  && isset($attributes[$this->fallbackUsernameAttribute][0])
+                  && !empty($attributes[$this->fallbackUsernameAttribute][0])) {
+            // Try fallback attribute
+            $username = $attributes[$this->fallbackUsernameAttribute][0];
+            Logger::info('TOTP: Using fallback attribute "' . $this->fallbackUsernameAttribute . '" for username');
         }
-        $username = $attributes[$this->usernameAttribute][0];
+
+        if ($username === null) {
+            $errorMsg = 'Username attribute "' . $this->usernameAttribute . '"';
+            if ($this->fallbackUsernameAttribute !== null) {
+                $errorMsg .= ' and fallback attribute "' . $this->fallbackUsernameAttribute . '"';
+            }
+            $errorMsg .= ' not found or empty in state';
+
+            if ($this->mandatory) {
+                // If 2FA is mandatory, this is a critical error - throw exception
+                Logger::error('TOTP: ' . $errorMsg . ' (2FA is mandatory)');
+                throw new SspException($errorMsg);
+            } else {
+                // If 2FA is optional, log warning and continue without 2FA
+                Logger::warning('TOTP: ' . $errorMsg . ' - continuing without 2FA (optional mode)');
+                return;
+            }
+        }
         Logger::info('TOTP: Processing authentication for user: ' . $username);
         
         // Check if TOTP was already completed in this session (SSO)
@@ -155,6 +183,7 @@ class TOTP extends ProcessingFilter
         $state['totp:config'] = [
             '2fa_mandatory' => $this->mandatory,
             'username_attribute' => $this->usernameAttribute,
+            'fallback_username_attribute' => $this->fallbackUsernameAttribute,
             'pits_dsn' => $this->pitsDsn,
             'pits_username' => $this->pitsUsername,
             'pits_password' => $this->pitsPassword,

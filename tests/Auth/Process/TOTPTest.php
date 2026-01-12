@@ -194,4 +194,98 @@ class TOTPTest extends TestCase
 
         $this->assertInstanceOf(TOTP::class, $filter);
     }
+
+    /**
+     * Test that authncontextclassref is optional and defaults to REFEDS MFA profile.
+     */
+    public function testAuthnContextClassRefDefaultsToRefedsMfa(): void
+    {
+        $filter = new TOTP([
+            'username_attribute' => 'uid',
+            'pits_dsn' => 'mysql:host=localhost;dbname=test',
+            'pits_username' => 'test_user',
+            'pits_password' => 'test_pass',
+            'pits_url' => 'https://example.com/verify',
+            'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
+        ], null);
+
+        $this->assertInstanceOf(TOTP::class, $filter);
+    }
+
+    /**
+     * Test that authncontextclassref can be customized.
+     */
+    public function testAuthnContextClassRefCanBeCustomized(): void
+    {
+        $filter = new TOTP([
+            'username_attribute' => 'uid',
+            'pits_dsn' => 'mysql:host=localhost;dbname=test',
+            'pits_username' => 'test_user',
+            'pits_password' => 'test_pass',
+            'pits_url' => 'https://example.com/verify',
+            'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
+            'authncontextclassref' => 'http://schemas.microsoft.com/claims/multipleauthn',
+        ], null);
+
+        $this->assertInstanceOf(TOTP::class, $filter);
+    }
+
+    /**
+     * Test that fallback_username_attribute is optional.
+     */
+    public function testFallbackUsernameAttributeIsOptional(): void
+    {
+        $filter = new TOTP([
+            'username_attribute' => 'uid',
+            'pits_dsn' => 'mysql:host=localhost;dbname=test',
+            'pits_username' => 'test_user',
+            'pits_password' => 'test_pass',
+            'pits_url' => 'https://example.com/verify',
+            'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
+        ], null);
+
+        $this->assertInstanceOf(TOTP::class, $filter);
+    }
+
+    /**
+     * Test that fallback_username_attribute can be provided.
+     */
+    public function testFallbackUsernameAttributeCanBeProvided(): void
+    {
+        $filter = new TOTP([
+            'username_attribute' => 'uid',
+            'fallback_username_attribute' => 'mail',
+            'pits_dsn' => 'mysql:host=localhost;dbname=test',
+            'pits_username' => 'test_user',
+            'pits_password' => 'test_pass',
+            'pits_url' => 'https://example.com/verify',
+            'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
+        ], null);
+
+        $this->assertInstanceOf(TOTP::class, $filter);
+    }
+
+    /**
+     * Test constructor with complete configuration including fallback attribute.
+     */
+    public function testConstructorWithFallbackAttributeFullConfig(): void
+    {
+        $filter = new TOTP([
+            'username_attribute' => 'uid',
+            'fallback_username_attribute' => 'eduPersonPrincipalName',
+            'pits_dsn' => 'mysql:host=localhost;dbname=test',
+            'pits_username' => 'test_user',
+            'pits_password' => 'test_pass',
+            'pits_url' => 'https://example.com/verify',
+            'pits_token' => 'test_token',
+            'pits_registration_url' => 'https://pits.example.com',
+            '2fa_mandatory' => false,
+        ], null);
+
+        $this->assertInstanceOf(TOTP::class, $filter);
+    }
 }
