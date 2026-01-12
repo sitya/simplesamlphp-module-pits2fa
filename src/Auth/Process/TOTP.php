@@ -162,6 +162,7 @@ class TOTP extends ProcessingFilter
             'pits_url' => $this->pitsUrl,
             'pits_token' => $this->pitsToken,
             'pits_registration_url' => $this->pitsRegistrationUrl,
+            'authncontextclassref' => $this->authnContextClassRef,
         ];
 
         $id = State::saveState($state, 'totp:request');
@@ -329,8 +330,8 @@ class TOTP extends ProcessingFilter
                 Logger::debug('TOTP: Added eduPersonAssurance attribute for user: ' . $username);
 
                 // Set SAML AuthnContextClassRef
-                $state['saml:AuthnContextClassRef'] = $this->authnContextClassRef;
-                Logger::debug('TOTP: Set AuthnContextClassRef to: ' . $this->authnContextClassRef);
+                $state['saml:AuthnContextClassRef'] = $filter->authnContextClassRef;
+                Logger::debug('TOTP: Set AuthnContextClassRef to: ' . $filter->authnContextClassRef);
 
                 // Success - continue authentication, clean up TOTP state
                 unset($state['totp:username']);
