@@ -37,6 +37,7 @@ class TOTP extends ProcessingFilter
     private string $pitsUrl;
     private string $pitsToken;
     private string $pitsRegistrationUrl;
+    private string $authnContextClassRef;
 
     /**
      * Initialize the filter.
@@ -86,6 +87,9 @@ class TOTP extends ProcessingFilter
             throw new SspException('Missing required configuration parameter: pits_registration_url');
         }
         $this->pitsRegistrationUrl = $config['pits_registration_url'];
+
+        // Default to REFEDS MFA Profile identifier
+        $this->authnContextClassRef = $config['authncontextclassref'] ?? 'https://refeds.org/profile/mfa';
     }
 
     /**
@@ -319,7 +323,15 @@ class TOTP extends ProcessingFilter
                     \SimpleSAML\Session::DATA_TIMEOUT_SESSION_END
                 );
                 Logger::debug('TOTP: Stored TOTP completion marker in session for user: ' . $username);
-                
+
+                // Add MFA assurance attribute
+                $state['Attributes']['eduPersonAssurance'] = ['https://refeds.org/profile/mfa'];
+                Logger::debug('TOTP: Added eduPersonAssurance attribute for user: ' . $username);
+
+                // Set SAML AuthnContextClassRef
+                $state['saml:AuthnContextClassRef'] = $this->authnContextClassRef;
+                Logger::debug('TOTP: Set AuthnContextClassRef to: ' . $this->authnContextClassRef);
+
                 // Success - continue authentication, clean up TOTP state
                 unset($state['totp:username']);
                 unset($state['totp:attempts']);
