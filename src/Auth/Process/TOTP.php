@@ -150,6 +150,12 @@ class TOTP extends ProcessingFilter
             
             if ($elapsed < $sessionDuration) {
                 Logger::info('TOTP: Bypassing TOTP verification for user ' . $username . ' - already verified in this session (elapsed: ' . $elapsed . 's)');
+
+                // Add MFA assurance attribute and set AuthnContextClassRef
+                $state['Attributes']['eduPersonAssurance'] = [$this->authnContextClassRef];
+                $state['saml:AuthnContextClassRef'] = $this->authnContextClassRef;
+                Logger::debug('TOTP: Added MFA attributes (' . $this->authnContextClassRef . ') for SSO user: ' . $username);
+
                 return;  // Skip TOTP, continue authentication
             } else {
                 Logger::debug('TOTP: Session TOTP marker expired for user ' . $username . ' (elapsed: ' . $elapsed . 's)');
@@ -354,13 +360,10 @@ class TOTP extends ProcessingFilter
                 );
                 Logger::debug('TOTP: Stored TOTP completion marker in session for user: ' . $username);
 
-                // Add MFA assurance attribute
-                $state['Attributes']['eduPersonAssurance'] = ['https://refeds.org/profile/mfa'];
-                Logger::debug('TOTP: Added eduPersonAssurance attribute for user: ' . $username);
-
-                // Set SAML AuthnContextClassRef
+                // Add MFA assurance attribute and set AuthnContextClassRef
+                $state['Attributes']['eduPersonAssurance'] = [$filter->authnContextClassRef];
                 $state['saml:AuthnContextClassRef'] = $filter->authnContextClassRef;
-                Logger::debug('TOTP: Set AuthnContextClassRef to: ' . $filter->authnContextClassRef);
+                Logger::debug('TOTP: Added MFA attributes (' . $filter->authnContextClassRef . ') for user: ' . $username);
 
                 // Success - continue authentication, clean up TOTP state
                 unset($state['totp:username']);
