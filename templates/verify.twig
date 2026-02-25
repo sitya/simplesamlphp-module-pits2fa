@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('css/totp.css', 'totp') }}" />
 {% endblock %}
 
+
 {% block content %}
     {% if error -%}
     <div class="pure-g">
@@ -49,4 +50,12 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.getElementById('totp_code').addEventListener('input', function () {
+            if (this.value.length === 6) {
+                this.form.submit();
+            }
+        });
+    </script>
 {% endblock %}
